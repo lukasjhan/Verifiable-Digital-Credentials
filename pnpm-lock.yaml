@@ -42,13 +42,13 @@ importers:
         specifier: ^1.2.2
         version: 1.6.0(@types/node@20.12.12)(jsdom@24.1.0)
 
-  examples/vcdm:
+  examples/digital-credentials:
     devDependencies:
       tsx:
         specifier: ^4.19.2
         version: 4.19.2
 
-  packages/vcdm: {}
+  packages/digital-credentials: {}
 
 packages:
 
