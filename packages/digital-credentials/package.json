@@ -1,7 +1,7 @@
 {
-  "name": "sd-jwt-vcdm",
+  "name": "digital-credentials",
   "version": "0.1.0",
-  "description": "SD JWT VCDM implementation in typescript",
+  "description": "Digital Credentials API and Passkey in typescript",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -20,6 +20,8 @@
     "test:cov": "vitest run --coverage"
   },
   "keywords": [
+    "digital-credentials",
+    "passkey",
     "vcdm",
     "sd-jwt",
     "jwt"

@@ -1,6 +1,6 @@
 {
-  "name": "sd-jwt-vcdm",
-  "description": "sd-jwt vcdm implementation in typescript",
+  "name": "digital-credentials",
+  "description": "Digital Credentials API and Passkey in typescript",
   "scripts": {
     "build": "lerna run build --stream",
     "lint": "biome lint ./packages",
