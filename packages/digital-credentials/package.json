@@ -11,6 +11,14 @@
       "require": "./dist/index.js"
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lukasjhan/digital-credentials.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lukasjhan/digital-credentials/issues"
+  },
+  "homepage": "https://github.com/lukasjhan/digital-credentials#readme",
   "scripts": {
     "build": "rm -rf **/dist && tsup",
     "lint": "biome lint ./src",
