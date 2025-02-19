@@ -40,7 +40,7 @@ Fast, minimal, and efficient. This library is designed to be as lightweight as p
 
 ## Getting Started 🏁
 
-TBD
+[Verifiable Digital Credentials Docs](https://lukasjhan.github.io/Verifiable-Digital-Credentials/)
 
 ## Architecture 🏗️
 
