@@ -1,4 +1,4 @@
-# Digital Credentials 🪪
+# Digital Credentials API 🌐
 
 Modern, secure, and user-friendly digital identity management for the web
 
@@ -19,11 +19,11 @@ Digital identity is evolving. While Passkeys have revolutionized authentication,
 ## 📦 Installation
 
 ```bash
-npm install digital-credentials
+npm install @vdcs/vc-api
 # or
-yarn add digital-credentials
+yarn add @vdcs/vc-api
 # or
-pnpm add digital-credentials
+pnpm add @vdcs/vc-api
 ```
 
 ## 🎮 Quick Start
