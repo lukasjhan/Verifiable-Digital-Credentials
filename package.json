@@ -12,7 +12,9 @@
     "publish:latest": "lerna publish --no-private --conventional-commits --include-merged-tags --create-release github --yes --dist-tag latest",
     "publish:next": "lerna publish --no-private --conventional-prerelease --force-publish --canary --no-git-tag-version --include-merged-tags --preid next --pre-dist-tag next --yes",
     "version:release": "lerna version --no-private",
-    "publish:release": "lerna publish --yes --no-private"
+    "publish:release": "lerna publish --yes --no-private",
+    "start:doc": "lerna run start:doc",
+    "build:doc": "lerna run build:doc"
   },
   "keywords": [
     "sd-jwt",
