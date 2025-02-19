@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Verifiable Digital Credentials (VDCs)',
-  tagline: 'Dinosaurs are cool',
+  tagline: 'Secure Digital Identity, Made Simple',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -17,8 +17,8 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'Lukas.J.Han', // Usually your GitHub org/user name.
+  projectName: 'Verifiable Digital Credentials', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -68,9 +68,9 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'My Site',
+      title: 'Verifiable Digital Credentials (VDCs)',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Verifiable Digital Credentials (VDCs) Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -89,7 +89,7 @@ const config: Config = {
       ],
     },
     footer: {
-      style: 'dark',
+      style: 'light',
       links: [
         {
           title: 'Docs',
@@ -104,16 +104,8 @@ const config: Config = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
               label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
+              href: 'https://discord.com/invite/yjvGPd5FCU',
             },
           ],
         },
@@ -126,12 +118,12 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/lukasjhan/Verifiable-Digital-Credentials',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Verifiable Digital Credentials(VDCs). Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
