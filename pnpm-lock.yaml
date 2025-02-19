@@ -50,6 +50,8 @@ importers:
 
   packages/digital-credentials: {}
 
+  packages/vc-api: {}
+
 packages:
 
   '@ampproject/remapping@2.3.0':
