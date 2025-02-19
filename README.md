@@ -63,6 +63,11 @@ We're all about making developers' lives easier. With this library, you’ll fin
 - **Rich Examples across various scenarios** to help you understand how to use the library effectively
 - **Detailed error messages** to help you understand what went wrong
 
+## Core Dependencies 📦
+
+- [@sd-jwt/core](https://github.com/openwallet-foundation/sd-jwt-js) - Provides core SD-JWT functionality for selective disclosure
+- [@mdoc/mdl](https://github.com/openwallet-foundation-labs/mdl-js) - Implements the mDL (ISO) specification
+
 ## Contributing 🤝
 
 We welcome contributions! If you find a bug, want to add a feature, or just have feedback, please feel free to open an issue or create a pull request. 🚀
