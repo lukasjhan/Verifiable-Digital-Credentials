@@ -1,4 +1,4 @@
-# Digital Credentials 🪪
+# Digital Credentials API 🌐
 
 Modern, secure, and user-friendly digital identity management for the web
 
@@ -15,6 +15,22 @@ Modern, secure, and user-friendly digital identity management for the web
 ## 🚀 Why Digital Credentials?
 
 Digital identity is evolving. While Passkeys have revolutionized authentication, the new Digital Credentials API opens up possibilities for secure attribute sharing. This library brings both worlds together in a developer-friendly package.
+
+## 📦 Installation
+
+```bash
+npm install @vdcs/vc-api
+# or
+yarn add @vdcs/vc-api
+# or
+pnpm add @vdcs/vc-api
+```
+
+## 🎮 Quick Start
+
+```typescript
+// Coming soon!
+```
 
 ## 🏗️ Architecture
 
