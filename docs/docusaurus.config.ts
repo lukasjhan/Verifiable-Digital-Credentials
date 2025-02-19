@@ -66,7 +66,7 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: '',
+    image: 'img/card.png',
     navbar: {
       title: 'Verifiable Digital Credentials (VDCs)',
       logo: {
