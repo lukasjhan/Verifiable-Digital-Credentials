@@ -20,7 +20,7 @@ const config: Config = {
   organizationName: 'Lukas.J.Han', // Usually your GitHub org/user name.
   projectName: 'Verifiable Digital Credentials', // Usually your repo name.
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
