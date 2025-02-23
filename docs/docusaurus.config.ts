@@ -80,6 +80,30 @@ const config: Config = {
           position: 'left',
           label: 'Get Started',
         },
+        {
+          type: 'docSidebar',
+          sidebarId: 'issuerSidebar',
+          position: 'left',
+          label: 'Issuer',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'idWalletSidebar',
+          position: 'left',
+          label: 'ID Wallet(Holder)',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'verifierSidebar',
+          position: 'left',
+          label: 'Verifier',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'libsSidebar',
+          position: 'left',
+          label: 'Libs',
+        },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/lukasjhan/Verifiable-Digital-Credentials',
