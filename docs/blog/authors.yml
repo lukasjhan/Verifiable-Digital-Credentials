@@ -1,23 +1,12 @@
-yangshun:
-  name: Yangshun Tay
-  title: Front End Engineer @ Facebook
-  url: https://github.com/yangshun
-  image_url: https://github.com/yangshun.png
-  page: true
-  socials:
-    x: yangshunz
-    github: yangshun
-
-slorber:
-  name: Sébastien Lorber
-  title: Docusaurus maintainer
-  url: https://sebastienlorber.com
-  image_url: https://github.com/slorber.png
+lukasjhan:
+  name: Lukas J. Han
+  title: Verifiable Digital Credentials (VDCs) Maintainer
+  url: https://blog.lukasjhan.com
+  image_url: https://github.com/lukasjhan.png
   page:
     # customize the url of the author page at /blog/authors/<permalink>
-    permalink: '/all-sebastien-lorber-articles'
+    permalink: '/all-lukas-j-han-articles'
   socials:
-    x: sebastienlorber
-    linkedin: sebastienlorber
-    github: slorber
-    newsletter: https://thisweekinreact.com
+    linkedin: lukas-j-han
+    github: lukasjhan
+    newsletter: https://blog.lukasjhan.com
