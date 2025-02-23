@@ -106,6 +106,10 @@ const config: Config = {
         },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
+          type: 'localeDropdown',
+          position: 'right',
+        },
+        {
           type: 'docsVersionDropdown',
           position: 'right',
         },
