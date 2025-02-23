@@ -106,6 +106,10 @@ const config: Config = {
         },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
+          type: 'docsVersionDropdown',
+          position: 'right',
+        },
+        {
           href: 'https://github.com/lukasjhan/Verifiable-Digital-Credentials',
           label: 'GitHub',
           position: 'right',
