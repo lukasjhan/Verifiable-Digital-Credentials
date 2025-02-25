@@ -10,7 +10,7 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://lukasjhan.github.io',
+  url: 'https://vdcs.js.org',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -40,7 +40,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/lukasjhan/Verifiable-Digital-Credentials/tree/main/docs/',
+            'https://github.com/hopae-official/Verifiable-Digital-Credentials/tree/main/docs/',
         },
         blog: {
           showReadingTime: true,
@@ -51,7 +51,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/lukasjhan/Verifiable-Digital-Credentials/tree/main/docs/',
+            'https://github.com/hopae-official/Verifiable-Digital-Credentials/tree/main/docs/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -114,7 +114,7 @@ const config: Config = {
           position: 'right',
         },
         {
-          href: 'https://github.com/lukasjhan/Verifiable-Digital-Credentials',
+          href: 'https://github.com/hopae-official/Verifiable-Digital-Credentials',
           label: 'GitHub',
           position: 'right',
         },
@@ -150,7 +150,7 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/lukasjhan/Verifiable-Digital-Credentials',
+              href: 'https://github.com/hopae-official/Verifiable-Digital-Credentials',
             },
           ],
         },
