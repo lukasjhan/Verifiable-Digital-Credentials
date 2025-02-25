@@ -79,15 +79,6 @@ Always check the README or documentation for each library to confirm its platfor
 4. **Security Considerations**: Follow the security guidelines in our documentation
 5. **Updates**: Subscribe to our release notifications for important updates and security patches
 
-## Troubleshooting
-
-Common issues and their solutions:
-
-- **Incompatible Versions**: Ensure all @vdcs/ libraries have matching versions
-- **Platform Errors**: Verify you're using platform-appropriate libraries
-- **TypeScript Errors**: Make sure your TypeScript version is 5.7 or higher
-- **Runtime Errors**: Check platform compatibility and required polyfills
-
 ## Next Steps
 
 Now that you've set up the basic components, explore these resources to continue your journey with VDCS:
