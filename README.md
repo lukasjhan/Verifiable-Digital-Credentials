@@ -72,6 +72,8 @@ We're all about making developers' lives easier. With this library, you’ll fin
 
 We welcome contributions! If you find a bug, want to add a feature, or just have feedback, please feel free to open an issue or create a pull request. 🚀
 
+Detailed instructions can be found in the [Contribution Guide](CONTRIBUTING.md).
+
 ## License 📜
 
 This project is licensed under the Apache 2.0 License.
