@@ -29,7 +29,7 @@ To develop the documentation locally, you'll need to set up environment variable
 4. Click "New repository variable"
 5. Add the following variable:
    - Name: `BASE_URL`
-   - Value: `http://localhost:3000` (or your preferred local development URL)
+   - Value: `/Verifiable-Digital-Credentials` (or your repository's name when you use github pages)
 
 This variable will be used during the build process. Don't worry if you skip this step - the build will still work, but will use default values.
 
