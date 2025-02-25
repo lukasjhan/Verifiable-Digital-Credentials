@@ -4,6 +4,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+console.log('BASE_URL: ', process.env.BASE_URL);
+
 const config: Config = {
   title: 'Verifiable Digital Credentials (VDCs)',
   tagline: 'Secure Digital Identity, Made Simple',
