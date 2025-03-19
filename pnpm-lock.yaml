@@ -542,6 +542,8 @@ importers:
 
   packages/vc-api: {}
 
+  packages/wallet: {}
+
 packages:
 
   '@0no-co/graphql.web@1.1.2':
