@@ -1,38 +1,78 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  Touchable,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-import { ThemedText } from '@/components/ThemedText';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTestQuery } from '@/queries';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function HomeScreen() {
-  const { isPending, error, data } = useTestQuery();
   const params = useLocalSearchParams<{ credential: string }>();
   const credential = params.credential;
 
-  if (isPending) return <Text>'Loading...'</Text>;
-
-  if (error) return <Text>'An error has occurred: ' + error.message</Text>;
+  const handlePressCredential = () => {
+    router.navigate({
+      pathname: '/Issue/CredentialDetail',
+      params: { credential },
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        onPress={() => router.navigate('/Issue/QR')}
-        style={styles.qrButton}
-      >
-        <View>
-          <Text style={styles.buttonText}>QR</Text>
-        </View>
-      </TouchableOpacity>
       <View style={styles.listContainer}>
         {credential ? (
-          <View style={styles.credentialWrapper}>
-            <Text style={styles.title}>My Credential</Text>
-            <Text>{credential}</Text>
-          </View>
+          <TouchableOpacity onPress={handlePressCredential}>
+            <Card style={styles.credentialCard}>
+              <ImageBackground
+                source={require('@/assets/images/card_bg.jpg')}
+                style={styles.contentContainer}
+              >
+                <View style={styles.cardContent}>
+                  <View style={styles.circleImage}>
+                    <Ionicons name="school-outline" size={24} color={'gray'} />
+                  </View>
+                  <Text style={styles.cardText}>University Deploma</Text>
+                </View>
+              </ImageBackground>
+            </Card>
+          </TouchableOpacity>
         ) : (
-          <ThemedText>You don't have any credentials yet</ThemedText>
+          <>
+            <Ionicons name="wallet-outline" size={100} color="black" />
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                marginTop: 20,
+                padding: 20,
+              }}
+            >
+              Welcome
+            </Text>
+            <Text style={{ fontSize: 13, color: 'gray', textAlign: 'center' }}>
+              You don't have any credentials yet. To add your first credential,
+              tap the button
+            </Text>
+          </>
         )}
+
+        <Card style={{ width: 300, marginTop: 20 }}>
+          <Button
+            variant="default"
+            className="w-full shadow shadow-foreground/5"
+            style={{ width: '100%', backgroundColor: 'darkblue' }}
+            onPress={() => router.navigate('/Issue/CredentialTypeSelection')}
+          >
+            <Text style={{ color: 'white' }}>Add a credential</Text>
+          </Button>
+        </Card>
       </View>
     </SafeAreaView>
   );
@@ -43,17 +83,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
   },
   qrButton: {
     alignSelf: 'flex-end',
@@ -84,14 +113,51 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
   listContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+  credentialCard: {
+    width: 300,
+    height: 200,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    overflow: 'hidden',
+  },
+  contentContainer: {
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    flex: 1,
+    width: '100%',
+  },
+  cardContent: {
+    padding: 10,
+    flex: 1,
+  },
+  cardTextWrapper: {},
+  cardText: {
+    color: 'white',
+    fontSize: 18,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+  },
+  circleImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 50 / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    backgroundColor: 'white',
+    margin: 3,
   },
 });
