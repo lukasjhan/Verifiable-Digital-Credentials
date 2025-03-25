@@ -7,21 +7,22 @@ import {
   ImageBackground,
 } from 'react-native';
 
-import { CredentialDecoder } from '@/utils/decoder';
+import { CredentialDecoder } from '@vdcs/wallet';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Card } from '@/components/ui/card';
+import { Claim } from '@/types';
+import { isValidClaim } from '@/utils';
 
-type Cliam = {
-  iss: string;
-  vct: string;
-  name: string;
-  birthdate: string;
-};
 export default function CredentialDetailScreen() {
   const params = useLocalSearchParams<{ credential: string }>();
   const credential = params.credential;
-  const claims: Cliam | null = credential
-    ? CredentialDecoder.decodeSDJWT(credential).claims
+  const claims: Claim | null = credential
+    ? (() => {
+        const decoded = CredentialDecoder.decodeSDJWT(credential).claims;
+        return isValidClaim<Claim>(decoded, ['iss', 'vct', 'name', 'birthdate'])
+          ? decoded
+          : null;
+      })()
     : null;
 
   if (!claims) return <Text>No claims</Text>;
@@ -79,7 +80,7 @@ export default function CredentialDetailScreen() {
                 <Text style={styles.infoText}>{claims.name}</Text>
               </View>
               <View>
-                <Text style={styles.infoText}>Birthdate</Text>
+                <Text style={styles.infoLabelText}>Birthdate</Text>
                 <Text style={styles.infoText}>{claims.birthdate}</Text>
               </View>
             </Card>
