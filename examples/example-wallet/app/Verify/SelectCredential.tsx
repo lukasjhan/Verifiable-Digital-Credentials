@@ -1,4 +1,9 @@
-import { router, Stack } from 'expo-router';
+import {
+  router,
+  Stack,
+  useFocusEffect,
+  useLocalSearchParams,
+} from 'expo-router';
 import {
   ImageBackground,
   ScrollView,
@@ -8,11 +13,16 @@ import {
   View,
 } from 'react-native';
 
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import { CredentialDecoder } from '@vdcs/wallet';
-import { Claim } from '@/types';
+import {
+  Claim,
+  CREDENTIALS_STORAGE_KEY,
+  Credential,
+  CredentialInfoMap,
+} from '@/types';
 import { Button } from '@/components/ui/button';
 import Carousel, {
   ICarouselInstance,
@@ -20,14 +30,25 @@ import Carousel, {
 } from 'react-native-reanimated-carousel';
 import { isValidClaim } from '@/utils';
 import { useSharedValue } from 'react-native-reanimated';
+import { Colors } from '@/constants/Colors';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //@Todo: Remove mock credential
 const mockCredential =
   'eyJ0eXAiOiJkYytzZC1qd3QiLCJhbGciOiJFUzI1NiJ9.eyJ2Y3QiOiJodHRwczovL2lzc3Vlci5kZXYuaG9wYWUuY29tL2NyZWRlbnRpYWxzL3R5cGVzL3VuaXZlcnNpdHkiLCJpc3MiOiJodHRwczovL2lzc3Vlci5kZXYuaG9wYWUuY29tIiwiX3NkIjpbIllwbm15VzdZemJ0ejFOODZVZjJadGNBNldoM0NVR1cyT0c1SjNFcVozYm8iLCJ0NXdmZE5CMWJuS1Nlcjkybm9QZXZaSW5fMm1MV0F0Q1lDTG1ac0dFR0xNIl0sIl9zZF9hbGciOiJzaGEtMjU2In0.k--1y8ivPJrjX0gD3CA9mZLIkIHs8zJPdohNFYzJ5jdf1736HDkGHgy3pT1hnNXF-vm0GKrwBSmueX3y8pIbtA~WyI5YjQwZjc1ODFiNzY4OGY5IiwibmFtZSIsIkpvaG4gRG9lIl0~WyJjOGZiNDNjNGFjMGMwMDVmIiwiYmlydGhkYXRlIiwiMTk5MC0wMS0wMSJd~';
 const mockResponseUri = 'https://verifier.dev.hopae.com/request'; // mock endpoint to present VP
+const requiredClaims = ['iss', 'vct', 'name'];
 
 export default function SelectCredentialScreen() {
-  const credential = mockCredential;
+  const [credentials, setCredentials] = useState<Credential[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const credential = credentials[0]?.credential;
+  const selectedCredential = credentials[currentIndex]?.credential;
+
+  const params = useLocalSearchParams<{ verifyRequestUri: string }>();
+  const verifyRequestUri = params.verifyRequestUri;
 
   const claims: Claim | null = credential
     ? (() => {
@@ -37,8 +58,6 @@ export default function SelectCredentialScreen() {
           : null;
       })()
     : null;
-
-  const mockList = ['University Deploma', 'Driving License', 'Passport'];
 
   const handlePressAccept = () => {
     router.replace({
@@ -53,8 +72,6 @@ export default function SelectCredentialScreen() {
   };
 
   const ref = useRef<ICarouselInstance>(null);
-  const width = 300;
-  const data = mockList;
   const progress = useSharedValue<number>(0);
 
   const onPressPagination = (index: number) => {
@@ -68,6 +85,62 @@ export default function SelectCredentialScreen() {
     });
   };
 
+  const [selectedOptions, setSelectedOptions] = useState({
+    iss: true, // required
+    vct: true, // required
+    name: true, // required
+    birthdate: false, // optional
+  });
+
+  const toggleOption = (option: keyof typeof selectedOptions) => {
+    if (requiredClaims.includes(option)) return;
+
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [option]: !prev[option],
+    }));
+  };
+
+  useEffect(
+    function fetchVerifyRequest() {
+      (async () => {
+        if (!verifyRequestUri) return;
+
+        try {
+          const res = await axios.post(verifyRequestUri);
+
+          const responseUri = res.data.response_uri;
+          console.log('responseUri: ', responseUri, res.data);
+
+          const verifyRes = await axios.post(responseUri, {
+            vp_token: {
+              [selectedCredential]: 'credential',
+            },
+          });
+
+          console.log('verifyRes: ', verifyRes);
+        } catch (e) {
+          console.error(e);
+        }
+      })();
+    },
+    [verifyRequestUri],
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      const loadCredentials = async () => {
+        const storedCredentials = await AsyncStorage.getItem(
+          CREDENTIALS_STORAGE_KEY,
+        );
+        console.log('stored credentials:', storedCredentials);
+        setCredentials(storedCredentials ? JSON.parse(storedCredentials) : []);
+      };
+
+      loadCredentials();
+    }, []),
+  );
+
   if (!claims) return <Text>No claims</Text>;
 
   return (
@@ -77,7 +150,7 @@ export default function SelectCredentialScreen() {
           title: '',
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="chevron-back" size={24} />
+              <Ionicons name="chevron-back" size={27} color="#000" />
             </TouchableOpacity>
           ),
         }}
@@ -85,19 +158,15 @@ export default function SelectCredentialScreen() {
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={styles.scrollViewContent}
+        bounces={false}
       >
-        {/* <ThemedView style={styles.container}> */}
         <Text style={styles.title}>
           An organisation is asking for information
         </Text>
-        <Text style={{ fontSize: 16 }}>
-          Select credential to be presented to
-        </Text>
-        <Text style={{ fontSize: 16, color: 'darkblue' }}>
-          {mockResponseUri}
-        </Text>
 
-        <View style={{ width: '100%' }}>
+        <View
+          style={{ width: '100%', backgroundColor: Colors.light.background }}
+        >
           <Carousel
             ref={ref}
             style={{
@@ -107,9 +176,13 @@ export default function SelectCredentialScreen() {
             }}
             width={310}
             height={300}
-            data={data}
+            data={credentials}
             loop={false}
             onProgressChange={progress}
+            onScrollEnd={(_index) => {
+              setCurrentIndex(_index);
+              console.log('scroll end index:', _index);
+            }}
             snapEnabled={true}
             renderItem={({ index, item }) => (
               <View style={styles.credentialCardWrapper}>
@@ -126,7 +199,9 @@ export default function SelectCredentialScreen() {
                           color={'gray'}
                         />
                       </View>
-                      <Text style={styles.cardText}>{item}</Text>
+                      <Text style={styles.cardText}>
+                        {CredentialInfoMap[item.credentialType].label}
+                      </Text>
                     </View>
                   </ImageBackground>
                 </Card>
@@ -136,7 +211,7 @@ export default function SelectCredentialScreen() {
 
           <Pagination.Basic
             progress={progress}
-            data={data}
+            data={credentials}
             dotStyle={{ backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: 50 }}
             containerStyle={{ gap: 5, marginTop: 10 }}
             onPress={onPressPagination}
@@ -144,18 +219,16 @@ export default function SelectCredentialScreen() {
         </View>
         <Card style={styles.providerCard}>
           <View style={styles.circleImage}>
-            <Ionicons name="newspaper" size={24} color={'gray'} />
+            <Ionicons name="newspaper" size={15} color={'gray'} />
           </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.boldText}>ABC Bank</Text>
-            <View style={styles.verifiedDescWapper}>
-              <Ionicons
-                name="checkmark-circle-outline"
-                size={20}
-                color={'green'}
-              />
-              <Text style={styles.decsText}>Contact is verified</Text>
-            </View>
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={styles.boldText}>Hopae Inc.</Text>
+            <Ionicons
+              name="checkmark-circle-outline"
+              size={20}
+              color={'green'}
+              opacity={0.5}
+            />
           </View>
           <Ionicons name="chevron-down" size={24} />
         </Card>
@@ -172,21 +245,40 @@ export default function SelectCredentialScreen() {
             </View>
 
             <Card style={styles.infoWrapper}>
-              <View>
-                <Text style={styles.infoLabelText}>ISS</Text>
-                <Text style={styles.infoText}>{claims.iss}</Text>
+              <View style={styles.optionWrapper}>
+                <Ionicons name="checkbox-outline" size={20} color={'black'} />
+                <View>
+                  <Text style={styles.infoLabelText}>ISS (required)</Text>
+                  <Text style={styles.infoText}>{claims.iss}</Text>
+                </View>
               </View>
-              <View>
-                <Text style={styles.infoLabelText}>VCT</Text>
-                <Text style={styles.infoText}>{claims.vct}</Text>
+              <View style={styles.optionWrapper}>
+                <Ionicons name="checkbox-outline" size={20} color={'black'} />
+                <View>
+                  <Text style={styles.infoLabelText}>VCT (required)</Text>
+                  <Text style={styles.infoText}>{claims.vct}</Text>
+                </View>
               </View>
-              <View>
-                <Text style={styles.infoLabelText}>Name</Text>
-                <Text style={styles.infoText}>{claims.name}</Text>
+              <View style={styles.optionWrapper}>
+                <Ionicons name="checkbox-outline" size={20} color={'black'} />
+                <View>
+                  <Text style={styles.infoLabelText}>Name (required)</Text>
+                  <Text style={styles.infoText}>{claims.name}</Text>
+                </View>
               </View>
-              <View>
-                <Text style={styles.infoLabelText}>Birthdate</Text>
-                <Text style={styles.infoText}>{claims.birthdate}</Text>
+
+              <View style={styles.optionWrapper}>
+                <TouchableOpacity onPress={() => toggleOption('birthdate')}>
+                  <Ionicons
+                    name="checkbox-outline"
+                    size={20}
+                    color={selectedOptions.birthdate ? 'green' : 'lightgray'}
+                  />
+                </TouchableOpacity>
+                <View>
+                  <Text style={styles.infoLabelText}>Birthdate (optional)</Text>
+                  <Text style={styles.infoText}>{claims.birthdate}</Text>
+                </View>
               </View>
             </Card>
           </Card>
@@ -222,9 +314,12 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#000',
+    alignSelf: 'flex-start',
+    marginStart: 20,
   },
   descWrapper: {
     gap: 8,
@@ -239,9 +334,11 @@ const styles = StyleSheet.create({
   boldText: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#000',
   },
   text: {
     fontSize: 16,
+    color: '#000',
   },
   link: {
     marginTop: 15,
@@ -298,9 +395,9 @@ const styles = StyleSheet.create({
     right: 10,
   },
   circleImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 50 / 2,
+    width: 35,
+    height: 35,
+    borderRadius: 35 / 2,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
@@ -312,8 +409,10 @@ const styles = StyleSheet.create({
     width: '90%',
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
+    padding: 10,
     marginTop: 20,
+    backgroundColor: Colors.light.background,
+    borderColor: Colors.light.border,
   },
   verifiedDescWapper: {
     flexDirection: 'row',
@@ -334,7 +433,9 @@ const styles = StyleSheet.create({
     width: '90%',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: 'white',
+    backgroundColor: Colors.light.lightYellow,
+    //borderColor: Colors.light.border,
+    borderColor: 'transparent',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -346,14 +447,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '100%',
     gap: 15,
+    backgroundColor: Colors.light.background,
+    borderColor: 'transparent',
   },
   infoLabelText: {
     fontSize: 15,
     opacity: 0.5,
+    color: '#000',
   },
   infoText: {
     fontSize: 15,
     opacity: 0.7,
+    color: '#000',
   },
   infoCircleImage: {
     width: 35,
@@ -372,7 +477,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   acceptButton: {
-    backgroundColor: 'darkblue',
+    backgroundColor: Colors.light.orange,
   },
   acceptButtonText: {
     color: 'white',
@@ -381,5 +486,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gray',
     backgroundColor: 'white',
+  },
+  optionWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
 });

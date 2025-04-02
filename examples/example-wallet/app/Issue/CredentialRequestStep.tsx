@@ -1,4 +1,4 @@
-import { router, Stack } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -7,20 +7,24 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import { ThemedView } from '@/components/ThemedView';
 import { useCredentialRequestMutation } from '@/queries';
 import { useEffect, useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Card } from '@/components/ui/card';
 import { Colors } from '@/constants/Colors';
 import { Button } from '@/components/ui/button';
+import { CREDENTIALS_STORAGE_KEY, CredentialType } from '@/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CredentialRequestStepScreen() {
+  const params = useLocalSearchParams<{ credentialType: CredentialType }>();
+  const credentialType = params.credentialType;
+
   const [credential, setCredential] = useState<string | null>(null);
 
   const { mutate: credentialRequestMutate, isPending } =
     useCredentialRequestMutation({
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         const credential = data.credentials[0].credential;
 
         if (!credential) return;
@@ -32,15 +36,32 @@ export default function CredentialRequestStepScreen() {
   useEffect(() => {
     // @Description: Request credential
     // @Reference: https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#name-pre-authorized-code-flow (Step 5)
-    credentialRequestMutate();
-  }, []);
+    credentialRequestMutate({ credentialType });
+  }, [credentialType]);
 
-  const handlePressAccept = () => {
-    router.replace({ pathname: '/', params: { credential } });
+  const handlePressAccept = async () => {
+    // Get existing credentials from storage
+    const existingCredentials = await AsyncStorage.getItem(
+      CREDENTIALS_STORAGE_KEY,
+    );
+    const credentials = existingCredentials
+      ? JSON.parse(existingCredentials)
+      : [];
+
+    // Add new credential to array
+    credentials.push({ credentialType, credential });
+
+    // Save updated credentials array
+    await AsyncStorage.setItem(
+      CREDENTIALS_STORAGE_KEY,
+      JSON.stringify(credentials),
+    );
+
+    router.replace({ pathname: '/' });
   };
 
   const handlePressDeny = () => {
-    router.replace({ pathname: '/', params: { credential } });
+    router.replace({ pathname: '/' });
   };
 
   return (
@@ -50,25 +71,25 @@ export default function CredentialRequestStepScreen() {
           title: '',
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="chevron-back" size={24} />
+              <Ionicons name="chevron-back" size={27} />
             </TouchableOpacity>
           ),
           headerShown: !isPending,
         }}
       />
-      <>
+      <View style={styles.container}>
         {isPending && (
-          <>
+          <View style={{ flex: 1, justifyContent: 'center' }}>
             <Text>Fetching Credential...</Text>
             <ActivityIndicator
               style={styles.loadingSpinner}
               color={'black'}
               size="large"
             />
-          </>
+          </View>
         )}
         {credential && (
-          <ThemedView style={styles.container}>
+          <>
             <Text style={styles.title}>
               Would you like to accept the credentials?
             </Text>
@@ -76,16 +97,19 @@ export default function CredentialRequestStepScreen() {
               <View style={styles.circleImage}>
                 <Ionicons name="newspaper" size={24} color={'gray'} />
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.boldText}>Pid Provider</Text>
-                <View style={styles.verifiedDescWapper}>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={20}
-                    color={'green'}
-                  />
-                  <Text style={styles.decsText}>Contact is verified</Text>
-                </View>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={styles.boldText}>Hopae Inc.</Text>
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={20}
+                  color={'green'}
+                />
               </View>
               <Ionicons name="chevron-down" size={24} />
             </Card>
@@ -125,9 +149,9 @@ export default function CredentialRequestStepScreen() {
                 <Text>Deny</Text>
               </Button>
             </View>
-          </ThemedView>
+          </>
         )}
-      </>
+      </View>
     </>
   );
 }
@@ -137,18 +161,23 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     padding: 5,
-    paddingTop: 40,
+    paddingTop: 30,
+    backgroundColor: Colors.light.background,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
+    alignSelf: 'flex-start',
+    marginStart: 10,
   },
   providerCard: {
     width: '95%',
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
+    backgroundColor: Colors.light.background,
+    borderColor: Colors.light.border,
   },
   circleImage: {
     width: 50,
@@ -177,7 +206,8 @@ const styles = StyleSheet.create({
     width: '95%',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: Colors.light.lightBlue,
+    backgroundColor: Colors.light.lightYellow,
+    borderColor: Colors.light.border,
   },
   decsText: {
     color: 'green',
@@ -189,9 +219,11 @@ const styles = StyleSheet.create({
   },
   infoWrapper: {
     padding: 10,
+    borderColor: 'transparent',
     borderRadius: 5,
     width: '95%',
     gap: 7,
+    backgroundColor: Colors.light.background,
   },
   boldText: {
     fontSize: 16,
@@ -211,7 +243,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   acceptButton: {
-    backgroundColor: 'darkblue',
+    backgroundColor: Colors.light.orange,
   },
   acceptButtonText: {
     color: 'white',
