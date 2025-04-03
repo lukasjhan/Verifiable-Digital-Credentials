@@ -15,12 +15,16 @@ import { Colors } from '@/constants/Colors';
 import { Button } from '@/components/ui/button';
 import { CREDENTIALS_STORAGE_KEY, CredentialType } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getCredentialClaims } from '@/utils';
 
 export default function CredentialRequestStepScreen() {
   const params = useLocalSearchParams<{ credentialType: CredentialType }>();
   const credentialType = params.credentialType;
 
   const [credential, setCredential] = useState<string | null>(null);
+  const claims = credential
+    ? getCredentialClaims({ credential, type: credentialType })
+    : null;
 
   const { mutate: credentialRequestMutate, isPending } =
     useCredentialRequestMutation({
@@ -49,7 +53,7 @@ export default function CredentialRequestStepScreen() {
       : [];
 
     // Add new credential to array
-    credentials.push({ credentialType, credential });
+    credentials.push({ type: credentialType, credential });
 
     // Save updated credentials array
     await AsyncStorage.setItem(
@@ -74,7 +78,6 @@ export default function CredentialRequestStepScreen() {
               <Ionicons name="chevron-back" size={27} />
             </TouchableOpacity>
           ),
-          headerShown: !isPending,
         }}
       />
       <View style={styles.container}>
@@ -88,10 +91,10 @@ export default function CredentialRequestStepScreen() {
             />
           </View>
         )}
-        {credential && (
+        {credential && !!claims && (
           <>
             <Text style={styles.title}>
-              Would you like to accept the credentials?
+              Would you like to add the credentials?
             </Text>
             <Card style={styles.providerCard}>
               <View style={styles.circleImage}>
@@ -127,9 +130,14 @@ export default function CredentialRequestStepScreen() {
                 </View>
 
                 <Card style={styles.infoWrapper}>
-                  <Text style={styles.infoText}>Family Name</Text>
-                  <Text style={styles.infoText}>Given Name</Text>
-                  <Text style={styles.infoText}>Birthdate</Text>
+                  {Object.entries(claims).map(([key, value]) => (
+                    <View key={key}>
+                      <Text style={styles.infoLabelText}>
+                        {key.replace(/_/g, ' ').toUpperCase()}
+                      </Text>
+                      <Text style={styles.infoText}>{value}</Text>
+                    </View>
+                  ))}
                 </Card>
               </Card>
             </View>
@@ -139,14 +147,14 @@ export default function CredentialRequestStepScreen() {
                 style={styles.acceptButton}
                 onPress={handlePressAccept}
               >
-                <Text style={styles.acceptButtonText}>Accept</Text>
+                <Text style={styles.acceptButtonText}>Add</Text>
               </Button>
               <Button
                 variant={'default'}
                 style={styles.denyButton}
                 onPress={handlePressDeny}
               >
-                <Text>Deny</Text>
+                <Text>Cancel</Text>
               </Button>
             </View>
           </>
@@ -252,5 +260,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gray',
     backgroundColor: 'white',
+  },
+  infoLabelText: {
+    fontSize: 15,
+    opacity: 0.5,
   },
 });

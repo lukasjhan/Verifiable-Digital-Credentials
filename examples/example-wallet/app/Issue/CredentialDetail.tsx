@@ -5,26 +5,23 @@ import {
   View,
   TouchableOpacity,
   ImageBackground,
+  ScrollView,
 } from 'react-native';
-
-import { CredentialDecoder } from '@vdcs/wallet';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Card } from '@/components/ui/card';
-import { Claim } from '@/types';
-import { isValidClaim } from '@/utils';
+import { CredentialInfoMap, CredentialType } from '@/types';
+import { getCredentialClaims } from '@/utils';
 import { Colors } from '@/constants/Colors';
 
 export default function CredentialDetailScreen() {
-  const params = useLocalSearchParams<{ credential: string }>();
+  const params = useLocalSearchParams<{
+    credential: string;
+    type: CredentialType;
+  }>();
   const credential = params.credential;
-  const claims: Claim | null = credential
-    ? (() => {
-        const decoded = CredentialDecoder.decodeSDJWT(credential).claims;
-        return isValidClaim<Claim>(decoded, ['iss', 'vct', 'name', 'birthdate'])
-          ? decoded
-          : null;
-      })()
-    : null;
+  const credentialType = params.type;
+
+  const claims = getCredentialClaims({ credential, type: credentialType });
 
   if (!claims) return <Text>No claims</Text>;
 
@@ -41,7 +38,7 @@ export default function CredentialDetailScreen() {
         }}
       />
 
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container} bounces={false}>
         <Card style={styles.credentialCard}>
           <ImageBackground
             source={require('@/assets/images/card_bg.jpg')}
@@ -51,7 +48,9 @@ export default function CredentialDetailScreen() {
               <View style={styles.circleImage}>
                 <Ionicons name="school-outline" size={24} color={'gray'} />
               </View>
-              <Text style={styles.cardText}>University Deploma</Text>
+              <Text style={styles.cardText}>
+                {CredentialInfoMap[credentialType]?.label}
+              </Text>
             </View>
           </ImageBackground>
         </Card>
@@ -68,40 +67,34 @@ export default function CredentialDetailScreen() {
             </View>
 
             <Card style={styles.infoWrapper}>
-              <View>
-                <Text style={styles.infoLabelText}>ISS</Text>
-                <Text style={styles.infoText}>{claims.iss}</Text>
-              </View>
-              <View>
-                <Text style={styles.infoLabelText}>VCT</Text>
-                <Text style={styles.infoText}>{claims.vct}</Text>
-              </View>
-              <View>
-                <Text style={styles.infoLabelText}>Name</Text>
-                <Text style={styles.infoText}>{claims.name}</Text>
-              </View>
-              <View>
-                <Text style={styles.infoLabelText}>Birthdate</Text>
-                <Text style={styles.infoText}>{claims.birthdate}</Text>
-              </View>
+              {Object.entries(claims).map(([key, value]) => (
+                <View key={key}>
+                  <Text style={styles.infoLabelText}>
+                    {key.replace(/_/g, ' ').toUpperCase()}
+                  </Text>
+                  <Text style={styles.infoText}>{value}</Text>
+                </View>
+              ))}
             </Card>
           </Card>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.light.background,
+    paddingTop: 20,
+    paddingBottom: 40,
   },
   credentialCard: {
-    marginTop: 20,
-    width: '95%',
-    height: 200,
+    //marginTop: 20,
+    width: '90%',
+    aspectRatio: 1.5,
     backgroundColor: 'white',
     borderRadius: 20,
     justifyContent: 'center',
@@ -156,12 +149,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dataInfoCard: {
-    marginTop: 10,
-    width: '95%',
+    marginTop: 15,
+    width: '90%',
     alignItems: 'center',
-    padding: 15,
+    padding: 10,
     backgroundColor: Colors.light.lightYellow,
-    borderColor: 'transparent'
+    borderColor: 'transparent',
   },
   decsText: {
     color: 'green',
@@ -177,7 +170,7 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 15,
     backgroundColor: Colors.light.background,
-    borderColor: 'transparent'
+    borderColor: 'transparent',
   },
   boldText: {
     fontSize: 16,
