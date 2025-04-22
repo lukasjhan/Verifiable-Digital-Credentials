@@ -1,4 +1,5 @@
 import { JsonWebKey } from 'crypto';
+import { Algorithm, Jwt, PublicKey, Secret } from 'jsonwebtoken';
 
 export type OrPromise<T> = T | Promise<T>;
 
@@ -18,6 +19,7 @@ export type Oid4VciConfig = {
   authorization_servers?: string[];
 
   credential_handler: (
+    tokenPayload: Jwt,
     dto: CredentialRequestDto,
   ) => OrPromise<CredentialResponseDto>;
 
@@ -62,6 +64,14 @@ export type Oid4VciConfig = {
 
   // TODO: implement
   credential_configurations_supported?: never;
+
+  // data for validate JWT token
+  jwt_validation: JwtValidation;
+};
+
+export type JwtValidation = {
+  algorithms: Algorithm[] | undefined;
+  secretOrPublicKey: Secret | PublicKey;
 };
 
 export type NonceResponseDto = {
