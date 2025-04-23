@@ -12,7 +12,7 @@ import {
 } from './type';
 import express, { Router, Request, Response } from 'express';
 import { URL } from 'url';
-import jwt, { Jwt, Secret, PublicKey } from 'jsonwebtoken';
+import jwt, { Jwt } from 'jsonwebtoken';
 
 export class Oid4VciMiddleware {
   private router: Router;
