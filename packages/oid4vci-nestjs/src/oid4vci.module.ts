@@ -32,7 +32,8 @@ export class Oid4VciModule {
           useFactory: (service: Oid4VciService) => {
             const config: Oid4VciConfig = {
               ...options,
-              credential_handler: (dto) => service.handleCredentialRequest(dto),
+              credential_handler: (tokenPayload, dto) =>
+                service.handleCredentialRequest(tokenPayload, dto),
               nonce_handler: service.handleNonceRequest?.bind(service),
               deferred_credential_handler:
                 service.handleDeferredCredentialRequest?.bind(service),
