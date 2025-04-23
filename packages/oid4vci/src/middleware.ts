@@ -33,7 +33,6 @@ export class Oid4VciMiddleware {
       nonce_handler,
       deferred_credential_handler,
       notification_handler,
-      jwt_validation,
     } = config;
 
     if (!credential_issuer) {
