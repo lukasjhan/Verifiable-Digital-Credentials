@@ -5,10 +5,14 @@ import {
   NotificationRequestDto,
   TokenDto,
 } from '@vdcs/oid4vci';
+import { Jwt } from 'jsonwebtoken';
 
 @Injectable()
 export abstract class Oid4VciService {
-  abstract handleCredentialRequest(dto: CredentialRequestDto): Promise<any>;
+  abstract handleCredentialRequest(
+    tokenPayload: Jwt,
+    dto: CredentialRequestDto,
+  ): Promise<any>;
   abstract handleNonceRequest?(): Promise<any>;
   abstract handleDeferredCredentialRequest?(
     dto: DeferredCredentialRequestDto,

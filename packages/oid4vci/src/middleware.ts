@@ -5,18 +5,22 @@ import {
   DEFAULT_PATH,
   DeferredCredentialRequestDto,
   IssuerMetadata,
+  JwtValidation,
   NotificationRequestDto,
   Oid4VciConfig,
   TokenDto,
 } from './type';
 import express, { Router, Request, Response } from 'express';
 import { URL } from 'url';
+import jwt, { Jwt } from 'jsonwebtoken';
 
 export class Oid4VciMiddleware {
   private router: Router;
   private readonly metadata: IssuerMetadata;
+  private readonly jwtValidation: JwtValidation;
 
   constructor(config: Oid4VciConfig) {
+    this.jwtValidation = config.jwt_validation;
     this.metadata = this.validateConfig(config);
     this.router = Router();
     this.setupRoutes(config);
@@ -65,6 +69,22 @@ export class Oid4VciMiddleware {
     return new URL(path, baseUrl).href;
   }
 
+  private validateBearerToken(bearerToken: string): Jwt | null {
+    try {
+      const jwtData = jwt.verify(
+        bearerToken,
+        this.jwtValidation.secretOrPublicKey,
+        {
+          algorithms: this.jwtValidation.algorithms,
+          complete: true,
+        },
+      );
+      return jwtData;
+    } catch (err) {
+      return null;
+    }
+  }
+
   private setupRoutes(config: Oid4VciConfig) {
     this.router.use(express.json());
     this.router.use(express.urlencoded({ extended: true }));
@@ -80,10 +100,21 @@ export class Oid4VciMiddleware {
       `/${DEFAULT_PATH.CREDENTIAL}`,
       async (req: Request, res: Response) => {
         try {
-          // TODO: Authorization
+          const bearerToken = req.headers['authorization']?.split(' ')[1];
+          if (!bearerToken) {
+            res.status(401).json({ error: 'Bearer token is missing' });
+            return;
+          }
+
+          const jwtData = this.validateBearerToken(bearerToken);
+          if (!jwtData) {
+            res.status(401).json({ error: 'Invalid bearer token' });
+            return;
+          }
+
           // TODO: Validation
           const dto: CredentialRequestDto = req.body;
-          const ret = await config.credential_handler(dto);
+          const ret = await config.credential_handler(jwtData, dto);
           const status = 'transaction_id' in ret ? 202 : 200;
           res.set('Cache-Control', 'no-store').status(status).json(ret);
         } catch (err) {
