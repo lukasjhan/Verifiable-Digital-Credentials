@@ -1,2 +1,1 @@
-export * from './type';
-export * from './middleware';
+export * from './oid4vci.module';
