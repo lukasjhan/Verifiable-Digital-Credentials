@@ -62,7 +62,7 @@ export type Grant = AuthorizationCodeGrant | PreAuthorizedCodeGrant;
 export type CredentialOffer = {
   credential_issuer: string;
   credential_configuration_ids: string[];
-  grants: Grant;
+  grants?: Grant;
 };
 
 /**
