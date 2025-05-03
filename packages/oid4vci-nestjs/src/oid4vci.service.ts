@@ -146,15 +146,15 @@ export class Oid4VciService {
           credential_configuration_ids = [],
         } = options;
 
+        const grants =
+          issuer_state || authorization_server
+            ? { authorization_code: { issuer_state, authorization_server } }
+            : undefined;
+
         const rawCredentialOffer = {
           credential_issuer: this.options.meta.credential_issuer,
           credential_configuration_ids,
-          grants: {
-            authorization_code: {
-              issuer_state,
-              authorization_server,
-            },
-          },
+          grants,
         };
         const credentialOffer =
           this.credentialOfferUri.byValue(rawCredentialOffer);
