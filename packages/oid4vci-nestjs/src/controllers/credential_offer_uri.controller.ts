@@ -1,5 +1,5 @@
 import { Controller, Get, Header, Param } from '@nestjs/common';
-import { Oid4VciService } from '../oid4vci.service';
+import { Oid4VciService } from '../services/oid4vci.service';
 
 @Controller('oid4vci')
 export class CredentialOfferUriController {
