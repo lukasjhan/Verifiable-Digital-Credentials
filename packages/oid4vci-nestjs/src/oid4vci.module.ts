@@ -1,7 +1,7 @@
 import { Module, DynamicModule, Provider } from '@nestjs/common';
 import { Oid4VciOptions } from './types/module';
 import { OID4VCI_OPTIONS } from './constant';
-import { Oid4VciService } from './oid4vci.service';
+import { Oid4VciService } from './services/oid4vci.service';
 import { Oid4VciController } from './controllers/oid4vci.controller';
 import { NonceController } from './controllers/nonce.controller';
 import { TokenController } from './controllers/token.controller';

@@ -1,3 +1,3 @@
 export * from './oid4vci.module';
 export * from './types/module';
-export * from './oid4vci.service';
+export * from './services/oid4vci.service';
