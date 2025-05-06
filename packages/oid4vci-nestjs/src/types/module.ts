@@ -6,6 +6,20 @@ import { JsonWebKey } from 'node:crypto';
 export class Oid4VciOptions {
   meta: {
     credential_issuer: string;
+    credential_configurations_supported?: Record<string, {
+      format: string;
+      display?: Array<{
+        name: string;
+        locale: string;
+      }>;
+    }>;
+    display?: Array<{
+      name: string;
+      locale: string;
+      logo?: {
+        uri: string;
+      };
+    }>;
   };
   credential_provider?: Type<CredentialProvider>;
   nonce?: {

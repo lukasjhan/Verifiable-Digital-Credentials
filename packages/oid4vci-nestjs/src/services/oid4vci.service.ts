@@ -189,4 +189,15 @@ export class Oid4VciService {
     // TODO: error response
     return this.credentialProvider.deferredCredential(transaction_id);
   }
+
+  getIssuerMetadata() {
+    const credentialIssuer = this.options.meta.credential_issuer;
+    return {
+      credential_issuer: credentialIssuer,
+      credential_endpoint: `${credentialIssuer}/credential`,
+      nonce_endpoint: `${credentialIssuer}/nonce`,
+      credential_configurations_supported: this.options.meta.credential_configurations_supported ?? {},
+      display: this.options.meta.display ?? [],
+    };
+  }
 }
