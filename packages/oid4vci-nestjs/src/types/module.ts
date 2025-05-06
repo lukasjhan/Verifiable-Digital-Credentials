@@ -2,10 +2,22 @@ import { Type } from '@nestjs/common';
 import { CredentialProvider } from '../iservice';
 import { Algorithm, SignOptions } from 'jsonwebtoken';
 import { JsonWebKey } from 'node:crypto';
+import { CredentialConfigurationSupported } from './credential_configurations_supported';
 
 export class Oid4VciOptions {
   meta: {
     credential_issuer: string;
+    credential_configurations_supported: {
+      [credentialConfigurationId: string]: CredentialConfigurationSupported;
+    };
+    display?: Array<{
+      name: string;
+      locale: string;
+      logo?: {
+        uri: string;
+        alt_text?: string;
+      };
+    }>;
   };
   credential_provider?: Type<CredentialProvider>;
   nonce?: {

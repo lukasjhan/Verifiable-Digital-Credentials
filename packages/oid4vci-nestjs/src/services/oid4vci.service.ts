@@ -17,6 +17,7 @@ import { CredentialProvider } from '../iservice';
 import jwt from 'jsonwebtoken';
 import { CredentialOfferGenerator } from './credentialOffer.service';
 import { NotificationDto } from '../dto/notification.dto';
+import { CredentialIssuerMetadata } from '../types/meta';
 
 @Injectable()
 export class Oid4VciService {
@@ -31,6 +32,18 @@ export class Oid4VciService {
     this.credentialOfferUri = new CredentialOfferGenerator(
       options.meta.credential_issuer,
     );
+  }
+
+  getIssuerMetadata(): CredentialIssuerMetadata {
+    const credentialIssuer = this.options.meta.credential_issuer;
+    return {
+      credential_issuer: credentialIssuer,
+      credential_endpoint: `${credentialIssuer}/credential`,
+      nonce_endpoint: `${credentialIssuer}/nonce`,
+      credential_configurations_supported:
+        this.options.meta.credential_configurations_supported,
+      display: this.options.meta.display ?? [],
+    };
   }
 
   private generateNonceJwt() {

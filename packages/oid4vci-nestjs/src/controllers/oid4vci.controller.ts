@@ -6,7 +6,9 @@ export class Oid4VciController {
   constructor(private readonly oid4vciService: Oid4VciService) {}
 
   @Get('.well-known/openid-credential-issuer')
-  async wellKnown() {}
+  wellKnown() {
+    return this.oid4vciService.getIssuerMetadata();
+  }
 
   @Header('Cache-Control', 'no-store')
   @Post('credential')
