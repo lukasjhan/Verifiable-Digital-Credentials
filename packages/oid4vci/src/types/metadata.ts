@@ -12,14 +12,15 @@ export type CredentialIssuerMetadata = {
  */
 export interface AuthorizationServerMetadata {
   issuer: string;
+  authorization_endpoint: string;
   token_endpoint: string;
-  response_types_supported: string[];
-  grant_types_supported?: string[];
-  token_endpoint_auth_methods_supported?: string[];
   jwks_uri?: string;
   registration_endpoint?: string;
   scopes_supported?: string[];
+  response_types_supported: string[];
   response_modes_supported?: string[];
+  grant_types_supported?: string[];
+  token_endpoint_auth_methods_supported?: string[];
   token_endpoint_auth_signing_alg_values_supported?: string[];
   service_documentation?: string;
   ui_locales_supported?: string[];
@@ -32,5 +33,5 @@ export interface AuthorizationServerMetadata {
   introspection_endpoint_auth_methods_supported?: string[];
   introspection_endpoint_auth_signing_alg_values_supported?: string[];
   code_challenge_methods_supported?: string[];
-  pre_authorized_grant_anonymous_access_supported?: boolean;
+  'pre-authorized_grant_anonymous_access_supported'?: boolean;
 }
