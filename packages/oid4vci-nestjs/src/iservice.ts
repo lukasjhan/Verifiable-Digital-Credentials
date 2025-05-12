@@ -2,6 +2,8 @@ import { SignOptions } from 'jsonwebtoken';
 import { CredentialOffer } from './types/credential_offer';
 import { NotificationDto } from './dto/notification.dto';
 import { DeferredCredentialResponseDto } from './dto/deferredCredential.dto';
+import { TokenDto } from './dto/token.dto';
+import { ValidatePreAuthorizedCodeResponseDto } from './types/token';
 import { CredentialResponse } from './types/credential';
 import { CredentialDto } from './dto/credential.dto';
 
@@ -57,4 +59,8 @@ export abstract class CredentialProvider {
   abstract deferredCredential?(
     transaction_id: string,
   ): Promise<DeferredCredentialResponseDto>;
+
+  abstract validatePreAuthorizedCode?(
+    dto: TokenDto,
+  ): Promise<ValidatePreAuthorizedCodeResponseDto>;
 }
