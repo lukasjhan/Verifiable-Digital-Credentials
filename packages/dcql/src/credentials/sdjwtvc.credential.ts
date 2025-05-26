@@ -172,7 +172,7 @@ export class SdJwtVcCredential implements CredentialBase {
   }
 
   /**
-   * Process a claims path pointer according to section 7.1.1
+   * Process a claims path pointer
    * @param path The claims path pointer array
    * @param data The credential data
    * @returns Array of selected JSON elements
