@@ -39,7 +39,7 @@ export type Claims = {
   /** optional, but if claim_sets is present, it is required */
   id?: string;
 
-  path: Array<string | null>;
+  path: Array<string | number | null>;
 
   value?: Array<number | string | boolean>;
 };

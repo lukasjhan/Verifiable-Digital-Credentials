@@ -178,7 +178,10 @@ export class SdJwtVcCredential implements CredentialBase {
    * @returns Array of selected JSON elements
    * @throws Error if processing should be aborted according to the specification
    */
-  private processPathPointer(path: Array<string | null>, data: any): any[] {
+  private processPathPointer(
+    path: Array<string | number | null>,
+    data: any,
+  ): any[] {
     // Start with the root element
     let selectedElements: any[] = [data];
 
