@@ -52,3 +52,13 @@ export type SdJwtVcCredentialQuery = Credential & {
     vct_value: string;
   };
 };
+
+export type MatchResult =
+  | {
+      match: false;
+      matchedClaims?: undefined;
+    }
+  | {
+      match: true;
+      matchedClaims: Claims[];
+    };
