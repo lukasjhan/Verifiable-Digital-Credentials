@@ -188,5 +188,72 @@ describe('Credentials', () => {
         });
       });
     });
+
+    describe('Match claim functionality', () => {
+      // Access the private matchClaim method for testing
+
+      it('should match a simple claim', () => {
+        const claim = { path: ['name'] };
+        const credential = new SdJwtVcCredential('test-id', 'test-vct-value', {
+          claims: [claim],
+        });
+        const data = { vct: 'test-vct-value', name: 'John' };
+        expect(credential.match(data)).toStrictEqual({
+          match: true,
+          matchedClaims: [{ path: ['name'] }],
+        });
+      });
+
+      it('should match a claim with value restriction', () => {
+        const claim = { path: ['age'], value: [30, 40] };
+        const credential = new SdJwtVcCredential('test-id', 'test-vct-value', {
+          claims: [claim],
+        });
+        const data = { vct: 'test-vct-value', age: 30 };
+        expect(credential.match(data)).toStrictEqual({
+          match: true,
+          matchedClaims: [{ path: ['age'], value: [30, 40] }],
+        });
+      });
+
+      it("should not match when value doesn't match restriction", () => {
+        const claim = { path: ['age'], value: [40, 50] };
+        const credential = new SdJwtVcCredential('test-id', 'test-vct-value', {
+          claims: [claim],
+        });
+        const data = { vct: 'test-vct-value', age: 30 };
+        expect(credential.match(data)).toStrictEqual({ match: false });
+      });
+
+      it('should handle errors in path processing gracefully', () => {
+        const claim = { path: ['items', null] };
+        const credential = new SdJwtVcCredential('test-id', 'test-vct-value', {
+          claims: [claim],
+        });
+        const data = { vct: 'test-vct-value', items: 'not-an-array' };
+        expect(credential.match(data)).toStrictEqual({ match: false });
+      });
+
+      it('should match array elements with null in path', () => {
+        const claim = { path: ['items', null], value: [3] };
+        const credential = new SdJwtVcCredential('test-id', 'test-vct-value', {
+          claims: [claim],
+        });
+        const data = { vct: 'test-vct-value', items: [1, 2, 3, 4] };
+        expect(credential.match(data)).toStrictEqual({
+          match: true,
+          matchedClaims: [{ path: ['items', null], value: [3] }],
+        });
+      });
+
+      it("should return false when claim path doesn't exist", () => {
+        const claim = { path: ['nonexistent'] };
+        const credential = new SdJwtVcCredential('test-id', 'test-vct-value', {
+          claims: [claim],
+        });
+        const data = { vct: 'test-vct-value', name: 'John' };
+        expect(credential.match(data)).toStrictEqual({ match: false });
+      });
+    });
   });
 });
