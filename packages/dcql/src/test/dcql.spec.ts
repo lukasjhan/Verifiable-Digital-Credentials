@@ -158,4 +158,67 @@ describe('DCQL', () => {
       });
     });
   });
+
+  describe('match', () => {
+    it('empty data', () => {
+      const rawDcql: rawDCQL = {
+        credentials: [
+          {
+            id: 'cred-1',
+            format: 'dc+sd-jwt',
+            meta: { vct_value: 'vct-1' },
+          },
+          {
+            id: 'cred-2',
+            format: 'dc+sd-jwt',
+            meta: { vct_value: 'vct-2' },
+          },
+        ],
+        credential_sets: [
+          {
+            options: [['cred-1'], ['cred-2']],
+            required: true,
+          },
+        ],
+      };
+      const dcql = DCQL.parse(rawDcql);
+      const result = dcql.match([]);
+      expect(result).toEqual({ match: false });
+    });
+
+    it('test 1', () => {
+      const rawDcql: rawDCQL = {
+        credentials: [
+          {
+            id: 'cred-1',
+            format: 'dc+sd-jwt',
+            meta: { vct_value: 'vct-1' },
+          },
+          {
+            id: 'cred-2',
+            format: 'dc+sd-jwt',
+            meta: { vct_value: 'vct-2' },
+          },
+        ],
+        credential_sets: [
+          {
+            options: [['cred-1'], ['cred-2']],
+            required: true,
+          },
+        ],
+      };
+      const dcql = DCQL.parse(rawDcql);
+      const result = dcql.match([{ vct: 'vct-1', name: 'name-1' }]);
+      expect(result).toEqual({
+        match: true,
+        matchedCredentials: [
+          {
+            credential: { vct: 'vct-1', name: 'name-1' },
+            matchedClaims: [],
+            dataIndex: 0,
+          },
+        ],
+      });
+    });
+  });
 });

@@ -1,7 +1,9 @@
+import { pathMatch } from '../match';
 import {
   Claims,
   ClaimSet,
   Credential,
+  MatchResult,
   SdJwtVcCredentialQuery,
   TrustedAuthority,
 } from '../type';
@@ -88,8 +90,86 @@ export class SdJwtVcCredential implements CredentialBase {
     };
   }
 
-  match(data: Record<string, unknown>): boolean {
-    return false;
+  match(data: Record<string, unknown>): MatchResult {
+    // First check if the credential type matches
+    if (data['vct'] !== undefined && data['vct'] !== this.vct_value) {
+      return { match: false };
+    }
+
+    // If claims is absent, the Verifier is requesting no claims that are selectively disclosable
+    // Return only the mandatory claims
+    if (!this._claims || this._claims.length === 0) {
+      return { match: true, matchedClaims: [] };
+    }
+
+    // If claim_sets is present, the Verifier requests one combination of the claims listed in claim_sets
+    if (this._claim_sets && this._claim_sets.length > 0) {
+      // The order of options in claim_sets expresses the Verifier's preference
+      // Try to match the first option that can be satisfied
+      for (const claimSet of this._claim_sets) {
+        const claimsInSet = this._claims.filter(
+          (claim) => claim.id !== undefined && claimSet.includes(claim.id),
+        );
+
+        // Check if all claims in this set can be satisfied by the data
+        const allClaimsMatch = claimsInSet.every((claim) =>
+          this.matchClaim(claim, data),
+        );
+
+        // If all claims in this set can be satisfied, return the earliest set
+        if (allClaimsMatch && claimsInSet.length > 0) {
+          return {
+            match: true,
+            matchedClaims: claimsInSet,
+          };
+        }
+      }
+
+      // If we can't satisfy any of the claim sets, don't return any claims
+      return { match: false };
+    }
+    // If claims is present but claim_sets is absent, the Verifier requests all claims listed in claims
+    else {
+      const satisfiableClaims = this._claims.every((claim) =>
+        this.matchClaim(claim, data),
+      );
+
+      // Only match if we can satisfy all claims
+      if (satisfiableClaims) {
+        return { match: true, matchedClaims: this._claims };
+      }
+    }
+
+    return { match: false };
+  }
+
+  /**
+   * Helper method to check if a specific claim matches against the data
+   * Implements semantics for JSON-based credentials as specified in section 7.1
+   */
+  private matchClaim(claim: Claims, data: Record<string, unknown>): boolean {
+    try {
+      // Start with the root element (top-level JSON object)
+      const selectedElements = pathMatch(claim.path, data);
+
+      // If no elements were selected, the claim can't be matched
+      if (selectedElements.length === 0) {
+        return false;
+      }
+
+      // If the claim doesn't have a value restriction, any selected value is acceptable
+      if (!claim.value || claim.value.length === 0) {
+        return true;
+      }
+
+      // Check if any of the selected elements match any of the allowed values
+      return selectedElements.some((element) =>
+        claim.value!.some((val) => val === element),
+      );
+    } catch (error) {
+      // If there was an error processing the path, the claim can't be matched
+      return false;
+    }
   }
 
   static parseSdJwtCredential(c: Credential): CredentialBase {

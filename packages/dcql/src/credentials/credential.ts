@@ -1,4 +1,4 @@
-import { Credential } from '../type';
+import { Credential, MatchResult } from '../type';
 
 /**
  * This class represent a credential
@@ -8,5 +8,5 @@ import { Credential } from '../type';
 export abstract class CredentialBase {
   abstract serialize(): Credential;
 
-  abstract match(data: Record<string, unknown>): boolean;
+  abstract match(data: Record<string, unknown>): MatchResult;
 }

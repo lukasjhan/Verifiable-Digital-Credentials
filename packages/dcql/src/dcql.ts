@@ -1,6 +1,6 @@
 import { CredentialBase } from './credentials/credential';
 import { SdJwtVcCredential } from './credentials/sdjwtvc.credential';
-import { CredentialSet, rawDCQL } from './type';
+import { Claims, CredentialSet, rawDCQL } from './type';
 
 /**
  * This class represent DCQL query data structure
@@ -54,8 +54,117 @@ export class DCQL {
     });
   }
 
-  match(data: Record<string, unknown>) {
-    // TODO: implement
-    // TODO: define return type
+  /**
+   * Match credentials against an array of data records according to section 6.4.2 rules.
+   *
+   * If credential_sets is not provided, all credentials in credentials are requested.
+   * Otherwise, the Verifier requests credentials satisfying:
+   * - All required credential sets (where required is true or omitted)
+   * - Optionally, any other credential sets
+   *
+   * @param dataRecords Array of data records to match against
+   * @returns Object containing match result and matched credentials with their claims
+   */
+  match(dataRecords: Record<string, unknown>[]): {
+    match: boolean;
+    matchedCredentials?: Array<{
+      credential: Record<string, unknown>;
+      matchedClaims: Claims[];
+      dataIndex: number;
+    }>;
+  } {
+    // No credentials to match
+    if (this._credentials.length === 0) {
+      return { match: false };
+    }
+
+    // Results array to collect all matches
+    const allMatches: Array<{
+      credential: Record<string, unknown>;
+      dcqlCredential: CredentialBase;
+      matchedClaims: Claims[];
+      dataIndex: number;
+    }> = [];
+
+    // Check each credential against each data record
+    this._credentials.forEach((credential) => {
+      // Try to match the credential against each data record
+      dataRecords.forEach((data, index) => {
+        const result = credential.match(data);
+
+        // If there's a match, add it to our results
+        if (result.match) {
+          allMatches.push({
+            credential: data,
+            dcqlCredential: credential,
+            matchedClaims: result.matchedClaims,
+            dataIndex: index,
+          });
+        }
+      });
+    });
+
+    // If no credentials matched any data, return no match
+    if (allMatches.length === 0) {
+      return { match: false };
+    }
+
+    // If credential_sets is not defined, return all matched credentials
+    if (!this._credential_sets || this._credential_sets.length === 0) {
+      return {
+        match: true,
+        matchedCredentials: allMatches,
+      };
+    }
+
+    // Handle credential sets if they exist
+    const matchedIds = new Set(
+      allMatches.map((match) => {
+        const serialized = match.dcqlCredential.serialize();
+        return serialized.id;
+      }),
+    );
+
+    // First, separate required credential sets
+    const requiredSets = this._credential_sets.filter(
+      (set) => set.required === undefined || set.required === true,
+    );
+
+    // Check if all required sets are satisfied
+    const satisfiedRequiredSets = requiredSets.every((set) =>
+      this.isCredentialSetSatisfied(set, matchedIds),
+    );
+
+    // If any required set is not satisfied, we can't match
+    if (!satisfiedRequiredSets) {
+      return { match: false };
+    }
+
+    // We've satisfied all required sets, return all matched credentials
+    return {
+      match: true,
+      matchedCredentials: allMatches.map((matches) => {
+        return {
+          credential: matches.credential,
+          matchedClaims: matches.matchedClaims,
+          dataIndex: matches.dataIndex,
+        };
+      }),
+    };
+  }
+
+  /**
+   * Check if a credential set is satisfied by the matched credential IDs
+   * A credential set is satisfied if at least one of its options is satisfied
+   */
+  private isCredentialSetSatisfied(
+    set: CredentialSet,
+    matchedIds: Set<string>,
+  ): boolean {
+    // A set is satisfied if at least one of its options is satisfied
+    return set.options.some((option) => {
+      // An option is satisfied if all credential IDs in the option are matched
+      return option.every((credentialId) => matchedIds.has(credentialId));
+    });
   }
 }
