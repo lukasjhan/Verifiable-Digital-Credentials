@@ -81,7 +81,7 @@ const publicKeyJwkToUint8Array = (
 };
 
 const sign = (data: Uint8Array, privateKey: Uint8Array): Uint8Array => {
-  const signature = p256.sign(privateKey, data);
+  const signature = p256.sign(data, privateKey);
   return signature.toCompactRawBytes();
 };
 
