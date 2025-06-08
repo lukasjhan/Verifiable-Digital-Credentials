@@ -1,6 +1,6 @@
 {
   "name": "@vdcs/oid4vci-client",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "description": "OpenID4VCI client implementation in typescript",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -57,8 +57,8 @@
     ]
   },
   "dependencies": {
-    "axios": "^1.8.2",
+    "@vdcs/jwt": "workspace:*",
     "@vdcs/oid4vci": "workspace:*",
-    "@vdcs/jwt": "workspace:*"
+    "axios": "^1.8.2"
   }
 }

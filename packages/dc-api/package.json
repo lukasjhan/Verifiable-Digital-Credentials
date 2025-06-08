@@ -1,6 +1,6 @@
 {
   "name": "@vdcs/dc-api",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Digital Credentials API and Passkey in typescript",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
