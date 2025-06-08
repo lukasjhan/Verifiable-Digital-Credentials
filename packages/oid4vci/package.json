@@ -19,6 +19,9 @@
     "url": "https://github.com/hopae-official/Verifiable-Digital-Credentials/issues"
   },
   "homepage": "https://vdcs.js.org",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "rm -rf **/dist && tsup",
     "lint": "biome lint ./src",
