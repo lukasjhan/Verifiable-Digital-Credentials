@@ -1,6 +1,6 @@
 {
   "name": "@vdcs/oid4vp-client",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "OpenID4VP client implementation in typescript",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -57,8 +57,8 @@
     ]
   },
   "dependencies": {
-    "axios": "^1.8.2",
     "@vdcs/dcql": "workspace:*",
-    "@vdcs/jwt": "workspace:*"
+    "@vdcs/jwt": "workspace:*",
+    "axios": "^1.8.2"
   }
 }
