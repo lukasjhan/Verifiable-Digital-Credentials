@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.8](https://github.com/lukasjhan/Verifiable-Digital-Credentials/compare/v0.1.7...v0.1.8) (2025-06-15)
+
+
+### Bug Fixes
+
+* correct typo ([#133](https://github.com/lukasjhan/Verifiable-Digital-Credentials/issues/133)) ([5aed43a](https://github.com/lukasjhan/Verifiable-Digital-Credentials/commit/5aed43a46fd0d81e5d84f910e33bbb51e09227f7))
+
+
+
+
+
 ## [0.1.7](https://github.com/lukasjhan/Verifiable-Digital-Credentials/compare/v0.1.6...v0.1.7) (2025-06-15)
 
 
