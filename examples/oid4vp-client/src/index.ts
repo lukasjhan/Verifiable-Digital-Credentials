@@ -1,6 +1,9 @@
 import { Oid4VpClient } from '@vdcs/oid4vp-client';
 import { SDJwtInstance } from '@sd-jwt/core';
 import { ES256, digest } from '@sd-jwt/crypto-nodejs';
+import { P256, normalizePrivateKey } from '@vdcs/jwt';
+import { sha256 } from '@sd-jwt/hash';
+import { uint8ArrayToBase64Url } from '@sd-jwt/utils';
 const data = require('../credential.json');
 
 const jwk = {
@@ -15,19 +18,24 @@ async function run() {
   const { credential } = data;
 
   const requestUri =
-    'openid4vp://?client_id=https%3A%2F%2Ffunke.animo.id%2Foid4vp%2F019368ed-3787-7669-b7f4-8c012238e90d&request_uri=https%3A%2F%2Ffunke.animo.id%2Foid4vp%2F019368ed-3787-7669-b7f4-8c012238e90d%2Fauthorization-requests%2Ffa8bdcab-2cdd-4f33-a31b-3983ccd065fa';
+    'openid4vp://?client_id=https%3A%2F%2Ffunke.animo.id%2Foid4vp%2F019368ed-3787-7669-b7f4-8c012238e90d&request_uri=https%3A%2F%2Ffunke.animo.id%2Foid4vp%2F019368ed-3787-7669-b7f4-8c012238e90d%2Fauthorization-requests%2Fd4c1989d-25ec-4648-adf7-8e516760546e';
   const client = await Oid4VpClient.fromRequestUri(requestUri);
   console.log({
     request: client.request,
   });
 
-  const signer = await ES256.getSigner(jwk);
+  // const signer = await ES256.getSigner(jwk);
 
   const sdJwtInstance = new SDJwtInstance({
-    hashAlg: 'sha-256',
     hasher: digest,
     kbSignAlg: 'ES256',
-    kbSigner: signer,
+    kbSigner: (data: string) => {
+      const privateKey = normalizePrivateKey(jwk);
+      const signingInputBytes = sha256(data);
+      const signature = P256.sign(signingInputBytes, privateKey);
+      const base64UrlSignature = uint8ArrayToBase64Url(signature);
+      return base64UrlSignature;
+    },
   });
 
   const kbPayload = {

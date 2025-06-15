@@ -433,6 +433,9 @@ importers:
       '@sd-jwt/utils':
         specifier: ^0.10.0
         version: 0.10.0
+      '@vdcs/jwt':
+        specifier: workspace:*
+        version: link:../../packages/jwt
       '@vdcs/oid4vp-client':
         specifier: workspace:*
         version: link:../../packages/oid4vp-client

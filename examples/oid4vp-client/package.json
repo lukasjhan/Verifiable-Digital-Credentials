@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@vdcs/oid4vp-client": "workspace:*",
+    "@vdcs/jwt": "workspace:*",
     "@sd-jwt/core": "^0.10.0",
     "@sd-jwt/crypto-nodejs": "^0.10.0",
     "@sd-jwt/types": "^0.10.0",
