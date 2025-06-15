@@ -1,6 +1,6 @@
 {
   "name": "@vdcs/oid4vci-client",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "OpenID4VCI client implementation in typescript",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

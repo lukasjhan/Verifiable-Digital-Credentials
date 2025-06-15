@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.7](https://github.com/hopae-official/Verifiable-Digital-Credentials/compare/v0.1.6...v0.1.7) (2025-06-15)
+
+
+### Features
+
+* expose types from OID4VP client package ([#132](https://github.com/hopae-official/Verifiable-Digital-Credentials/issues/132)) ([74aeb3a](https://github.com/hopae-official/Verifiable-Digital-Credentials/commit/74aeb3a76b8d9cbc0aa32535b51b817952893905))
+
+
+
+
+
 ## [0.1.6](https://github.com/hopae-official/Verifiable-Digital-Credentials/compare/v0.1.5...v0.1.6) (2025-06-15)
 
 **Note:** Version bump only for package @vdcs/oid4vp-client
