@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.9](https://github.com/lukasjhan/Verifiable-Digital-Credentials/compare/v0.1.8...v0.1.9) (2025-06-16)
+
+
+### Features
+
+* fix dcql vct_values  ([#136](https://github.com/lukasjhan/Verifiable-Digital-Credentials/issues/136)) ([404442f](https://github.com/lukasjhan/Verifiable-Digital-Credentials/commit/404442ff3fffca040b3b27b1166bf49bd332bce2))
+
+
+
+
+
 ## [0.1.8](https://github.com/lukasjhan/Verifiable-Digital-Credentials/compare/v0.1.7...v0.1.8) (2025-06-15)
 
 
