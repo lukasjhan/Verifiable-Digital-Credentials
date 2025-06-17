@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/lukasjhan/Verifiable-Digital-Credentials/compare/v0.1.9...v0.2.0) (2025-06-17)
+
+
+### Features
+
+* dcql response in no credential_sets case ([#139](https://github.com/lukasjhan/Verifiable-Digital-Credentials/issues/139)) ([3f45811](https://github.com/lukasjhan/Verifiable-Digital-Credentials/commit/3f45811b14486082e577ae6c382f0e6959240d98))
+* improve dcql tests ([#140](https://github.com/lukasjhan/Verifiable-Digital-Credentials/issues/140)) ([1b8ffbc](https://github.com/lukasjhan/Verifiable-Digital-Credentials/commit/1b8ffbcc8442b35e6b4de6aea3b90d7bf661f916))
+
+
+
+
+
 ## [0.1.9](https://github.com/lukasjhan/Verifiable-Digital-Credentials/compare/v0.1.8...v0.1.9) (2025-06-16)
 
 

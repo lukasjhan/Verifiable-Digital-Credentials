@@ -1,6 +1,6 @@
 {
   "name": "digital-credentials",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "Digital Credentials API and Passkey in typescript",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
