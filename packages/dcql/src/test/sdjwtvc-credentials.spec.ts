@@ -206,6 +206,7 @@ describe('Credentials', () => {
           match: true,
           matchedClaims: [{ path: ['name'] }],
           matchedIndices: [0],
+          credentialQueryId: 'test-id',
         });
       });
 
@@ -223,6 +224,7 @@ describe('Credentials', () => {
           match: true,
           matchedClaims: [{ path: ['age'], value: [30, 40] }],
           matchedIndices: [0],
+          credentialQueryId: 'test-id',
         });
       });
 
@@ -266,6 +268,7 @@ describe('Credentials', () => {
           match: true,
           matchedClaims: [{ path: ['items', null], value: [3] }],
           matchedIndices: [0],
+          credentialQueryId: 'test-id',
         });
       });
 
@@ -293,11 +296,15 @@ describe('Credentials', () => {
             claims: [claim1, claim2],
           },
         );
-        const data = [{ vct: 'test-vct-value', name: 'John' }, { vct: 'test-vct-value', age: '18' }];
+        const data = [
+          { vct: 'test-vct-value', name: 'John' },
+          { vct: 'test-vct-value', age: '18' },
+        ];
         expect(credential.match(data)).toStrictEqual({
           match: true,
           matchedClaims: [{ path: ['name'] }, { path: ['age'] }],
           matchedIndices: [0, 1],
+          credentialQueryId: 'test-id',
         });
       });
 
@@ -305,7 +312,10 @@ describe('Credentials', () => {
         const claim1 = { id: 'claim1', path: ['name'] };
         const claim2 = { id: 'claim2', path: ['age'] };
         const claim3 = { id: 'claim3', path: ['address'] };
-        const claimSets = [['claim1', 'claim2'], ['claim2', 'claim3']];
+        const claimSets = [
+          ['claim1', 'claim2'],
+          ['claim2', 'claim3'],
+        ];
         const credential = new SdJwtVcCredential(
           'test-id',
           ['test-vct-value'],
@@ -315,11 +325,18 @@ describe('Credentials', () => {
             claim_sets: claimSets,
           },
         );
-        const data = [{ vct: 'test-vct-value', name: 'John' }, { vct: 'test-vct-value', age: '18' }];
+        const data = [
+          { vct: 'test-vct-value', name: 'John' },
+          { vct: 'test-vct-value', age: '18' },
+        ];
         expect(credential.match(data)).toStrictEqual({
           match: true,
-          matchedClaims: [{ id: 'claim1', path: ['name'] }, { id: 'claim2', path: ['age'] }],
+          matchedClaims: [
+            { id: 'claim1', path: ['name'] },
+            { id: 'claim2', path: ['age'] },
+          ],
           matchedIndices: [0, 1],
+          credentialQueryId: 'test-id',
         });
       });
     });

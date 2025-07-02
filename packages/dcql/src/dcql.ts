@@ -85,6 +85,7 @@ export class DCQL {
       dcqlCredential: CredentialBase;
       matchedClaims: Claims[];
       dataIndex: number;
+      credentialQueryId: string;
     }> = [];
 
     // Check each credential against the data records
@@ -99,6 +100,7 @@ export class DCQL {
             dcqlCredential: credential,
             matchedClaims: result.matchedClaims,
             dataIndex: index,
+            credentialQueryId: result.credentialQueryId,
           });
         });
       }
@@ -112,15 +114,14 @@ export class DCQL {
     // Credential IDs matched in dataRecords
     const matchedIds = new Set(
       allMatches.map((match) => {
-        const serialized = match.dcqlCredential.serialize();
-        return serialized.id;
+        return match.credentialQueryId;
       }),
     );
 
     // If credential_sets is not defined
     if (!this._credential_sets || this._credential_sets.length === 0) {
       // All IDs in Credential Query
-      const allCredentialIds = this._credentials.map((c) => c.serialize().id);
+      const allCredentialIds = this._credentials.map((c) => c.getId());
 
       const everyCredentialSatisfied = allCredentialIds.every((id) =>
         matchedIds.has(id),
@@ -136,7 +137,7 @@ export class DCQL {
           credential: match.credential,
           matchedClaims: match.matchedClaims,
           dataIndex: match.dataIndex,
-          credentialQueryId: match.dcqlCredential.serialize().id,
+          credentialQueryId: match.credentialQueryId,
         })),
       };
     }
@@ -164,7 +165,7 @@ export class DCQL {
           credential: matches.credential,
           matchedClaims: matches.matchedClaims,
           dataIndex: matches.dataIndex,
-          credentialQueryId: matches.dcqlCredential.serialize().id,
+          credentialQueryId: matches.credentialQueryId,
         };
       }),
     };
