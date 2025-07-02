@@ -37,6 +37,10 @@ export class SdJwtVcCredential implements CredentialBase {
     }
   }
 
+  getId() {
+    return this.id;
+  }
+
   setMultiple(multiple: boolean) {
     this._multiple = multiple;
     return this;
@@ -101,7 +105,8 @@ export class SdJwtVcCredential implements CredentialBase {
           return {
             match: true,
             matchedClaims: result.matchedClaims,
-            matchedIndices: [i]
+            matchedIndices: [i],
+            credentialQueryId: this.id,
           };
         }
       }
@@ -109,7 +114,9 @@ export class SdJwtVcCredential implements CredentialBase {
     }
   }
 
-  private matchSingle(data: Record<string, unknown>): Omit<MatchResult, 'matchedIndices'> {
+  private matchSingle(
+    data: Record<string, unknown>,
+  ): Omit<MatchResult, 'matchedIndices'> {
     // First check if the credential type matches
     const isVctMatched =
       data['vct'] !== undefined &&
@@ -169,44 +176,52 @@ export class SdJwtVcCredential implements CredentialBase {
 
   private matchMultiple(dataArray: Record<string, unknown>[]): MatchResult {
     // Check if the data record satisfies the VCT requirements
-    const validRecordsWithIndex = dataArray.map((record, index) => ({
-      record,
-      index,
-      isValid:
-        record['vct'] !== undefined &&
-        typeof record['vct'] === 'string' &&
-        this.vct_values.includes(record['vct'])
-    })).filter(item => item.isValid);
+    const validRecordsWithIndex = dataArray
+      .map((record, index) => ({
+        record,
+        index,
+        isValid:
+          record['vct'] !== undefined &&
+          typeof record['vct'] === 'string' &&
+          this.vct_values.includes(record['vct']),
+      }))
+      .filter((item) => item.isValid);
 
     if (validRecordsWithIndex.length === 0) {
       return { match: false };
     }
 
-    const validRecords = validRecordsWithIndex.map(item => item.record);
-    const validIndices = validRecordsWithIndex.map(item => item.index);
+    const validRecords = validRecordsWithIndex.map((item) => item.record);
+    const validIndices = validRecordsWithIndex.map((item) => item.index);
 
     // If claims is absent, the Verifier is requesting no claims
     if (!this._claims || this._claims.length === 0) {
-      return { match: true, matchedClaims: [], matchedIndices: validIndices };
+      return {
+        match: true,
+        matchedClaims: [],
+        matchedIndices: validIndices,
+        credentialQueryId: this.id,
+      };
     }
 
     // If claim_sets is present
     if (this._claim_sets && this._claim_sets.length > 0) {
       for (const claimSet of this._claim_sets) {
         const claimsInSet = this._claims.filter(
-          (claim) => claim.id !== undefined && claimSet.includes(claim.id)
+          (claim) => claim.id !== undefined && claimSet.includes(claim.id),
         );
 
         // Check if all claims can be satisfied by any combination of valid records
-        const allClaimsMatch = claimsInSet.every(claim =>
-          validRecords.some(record => this.matchClaim(claim, record))
+        const allClaimsMatch = claimsInSet.every((claim) =>
+          validRecords.some((record) => this.matchClaim(claim, record)),
         );
 
         if (allClaimsMatch && claimsInSet.length > 0) {
           return {
             match: true,
             matchedClaims: claimsInSet,
-            matchedIndices: validIndices
+            matchedIndices: validIndices,
+            credentialQueryId: this.id,
           };
         }
       }
@@ -215,15 +230,16 @@ export class SdJwtVcCredential implements CredentialBase {
     // If claims is present but claim_sets is absent
     else {
       // Check if all claims can be satisfied by any combination of valid records
-      const satisfiableClaims = this._claims.every(claim =>
-        validRecords.some(record => this.matchClaim(claim, record))
+      const satisfiableClaims = this._claims.every((claim) =>
+        validRecords.some((record) => this.matchClaim(claim, record)),
       );
 
       if (satisfiableClaims) {
         return {
           match: true,
           matchedClaims: this._claims,
-          matchedIndices: validIndices
+          matchedIndices: validIndices,
+          credentialQueryId: this.id,
         };
       }
     }

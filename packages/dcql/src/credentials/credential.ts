@@ -6,6 +6,8 @@ import { Credential, MatchResult } from '../type';
  *
  */
 export abstract class CredentialBase {
+  abstract getId(): string;
+
   abstract serialize(): Credential;
 
   abstract match(data: Record<string, unknown>[]): MatchResult;
