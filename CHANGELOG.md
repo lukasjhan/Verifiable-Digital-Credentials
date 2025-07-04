@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/hopae-official/Verifiable-Digital-Credentials/compare/v0.2.0...v0.2.1) (2025-07-04)
+
+
+### Features
+
+* add credential ID tracking in match results and abstract getId method ([#144](https://github.com/hopae-official/Verifiable-Digital-Credentials/issues/144)) ([7d81fec](https://github.com/hopae-official/Verifiable-Digital-Credentials/commit/7d81fecc6fc3b26853000ca91a5ab75cf46f1c87))
+* add credential query id to dcql match result ([#142](https://github.com/hopae-official/Verifiable-Digital-Credentials/issues/142)) ([ef75199](https://github.com/hopae-official/Verifiable-Digital-Credentials/commit/ef75199214b6971bf7211cb0e5c84d9d67b8f7a2))
+* multiple feature on dcql query ([#141](https://github.com/hopae-official/Verifiable-Digital-Credentials/issues/141)) ([7365128](https://github.com/hopae-official/Verifiable-Digital-Credentials/commit/7365128e0c1457bd04ac423c84bcbaf39be76d88))
+
+
+
+
+
 # [0.2.0](https://github.com/lukasjhan/Verifiable-Digital-Credentials/compare/v0.1.9...v0.2.0) (2025-06-17)
 
 
